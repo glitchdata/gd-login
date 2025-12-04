@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · GD Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="dashboard">
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div>
+        <p class="eyebrow">Session active</p>
+        <h1 id="user-greeting">Welcome</h1>
+        <p class="lead">You are signed in with a server-backed session. Use the actions below to manage your account.</p>
+      </div>
+      <button class="primary" id="logout-btn">Log out</button>
+    </header>
+
+    <section class="panel">
+      <h2>Account details</h2>
+      <dl class="details">
+        <div>
+          <dt>Name</dt>
+          <dd id="detail-name">—</dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd id="detail-email">—</dd>
+        </div>
+        <div>
+          <dt>Member since</dt>
+          <dd id="detail-created">—</dd>
+        </div>
+      </dl>
+    </section>
+  </div>
+
+  <script type="module" src="/dashboard.js"></script>
+</body>
+</html>
