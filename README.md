@@ -6,7 +6,8 @@ A lightweight, traditional PHP login portal that uses server-rendered forms, PHP
 
 - PHP session-based authentication without external frameworks
 - Login and registration handled by `index.php` with friendly error banners
-- User data persisted to `data/users.json` with `password_hash` / `password_verify`
+- User data persisted to `schema/data/users.json` with `password_hash` / `password_verify`
+- Optional MySQL schema (`schema/schema.sql`) plus inserts (`schema/seed.sql`) generated from the JSON data
 - Protected `dashboard.php` that greets the signed-in user and exposes account metadata
 - Simple `logout.php` endpoint to clear the session
 
@@ -17,7 +18,8 @@ A lightweight, traditional PHP login portal that uses server-rendered forms, PHP
 ## Getting started
 
 1. **Install dependencies** – none beyond PHP itself.
-2. **Seed demo data (optional)** – `public_html/data/users.json` already includes `demo@example.com / password`. You can delete the file to start fresh.
+2. **Seed demo data (optional)** – `schema/data/users.json` already includes `demo@example.com / password`. You can delete the file to start fresh.
+   - Prefer MySQL? Execute `schema/schema.sql` to create the tables, then `schema/seed.sql` to insert the demo user.
 3. **Run the built-in PHP server**
    ```bash
    php -S localhost:8000 -t public_html
@@ -31,13 +33,16 @@ A lightweight, traditional PHP login portal that uses server-rendered forms, PHP
 ├── public_html
 │   ├── assets
 │   │   └── styles.css          # Shared styling for login + dashboard
-│   ├── data
-│   │   └── users.json          # JSON data store (bcrypt hashes)
 │   ├── includes
 │   │   └── users.php           # Helper functions for user CRUD + auth
 │   ├── dashboard.php           # Protected area
 │   ├── index.php               # Login + registration portal
 │   └── logout.php              # Session teardown
+├── schema
+│   ├── data
+│   │   └── users.json          # JSON data store (bcrypt hashes)
+│   ├── schema.sql              # MySQL schema (DDL)
+│   └── seed.sql                # MySQL seed data derived from JSON
 └── README.md
 ```
 
@@ -48,7 +53,7 @@ If you kept the bundled seed file you can log in with:
 - Email: `demo@example.com`
 - Password: `password`
 
-Otherwise, submit the “Create account” form to register a new profile. Users are written to `public_html/data/users.json` using `password_hash()` with the BCRYPT algorithm.
+Otherwise, submit the “Create account” form to register a new profile. Users are written to `schema/data/users.json` using `password_hash()` with the BCRYPT algorithm. To sync with MySQL, rerun `schema/schema.sql` followed by `schema/seed.sql`, or migrate the data manually.
 
 ## Notes
 

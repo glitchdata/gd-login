@@ -1,6 +1,6 @@
 <?php
 
-const USERS_FILE = __DIR__ . '/../data/users.json';
+const USERS_FILE = __DIR__ . '/../../schema/data/users.json';
 
 function loadUsers(): array
 {
