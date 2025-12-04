@@ -17,10 +17,10 @@ A lightweight, traditional PHP login portal that uses server-rendered forms, PHP
 ## Getting started
 
 1. **Install dependencies** – none beyond PHP itself.
-2. **Seed demo data (optional)** – `data/users.json` already includes `demo@example.com / password`. You can delete the file to start fresh.
+2. **Seed demo data (optional)** – `public_html/data/users.json` already includes `demo@example.com / password`. You can delete the file to start fresh.
 3. **Run the built-in PHP server**
    ```bash
-   php -S localhost:8000
+   php -S localhost:8000 -t public_html
    ```
 4. Visit `http://localhost:8000` in your browser. Use the login form or create a new account.
 
@@ -28,15 +28,16 @@ A lightweight, traditional PHP login portal that uses server-rendered forms, PHP
 
 ```
 .
-├── assets
-│   └── styles.css          # Shared styling for login + dashboard
-├── data
-│   └── users.json          # JSON data store (bcrypt hashes)
-├── includes
-│   └── users.php           # Helper functions for user CRUD + auth
-├── dashboard.php           # Protected area
-├── index.php               # Login + registration portal
-├── logout.php              # Session teardown
+├── public_html
+│   ├── assets
+│   │   └── styles.css          # Shared styling for login + dashboard
+│   ├── data
+│   │   └── users.json          # JSON data store (bcrypt hashes)
+│   ├── includes
+│   │   └── users.php           # Helper functions for user CRUD + auth
+│   ├── dashboard.php           # Protected area
+│   ├── index.php               # Login + registration portal
+│   └── logout.php              # Session teardown
 └── README.md
 ```
 
@@ -47,7 +48,7 @@ If you kept the bundled seed file you can log in with:
 - Email: `demo@example.com`
 - Password: `password`
 
-Otherwise, submit the “Create account” form to register a new profile. Users are written to `data/users.json` using `password_hash()` with the BCRYPT algorithm.
+Otherwise, submit the “Create account” form to register a new profile. Users are written to `public_html/data/users.json` using `password_hash()` with the BCRYPT algorithm.
 
 ## Notes
 
