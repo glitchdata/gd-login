@@ -1,77 +1,55 @@
-# GD Login
+# GD Login (PHP Edition)
 
-A minimal Express + vanilla JS web app that demonstrates login, registration, and session-backed dashboard navigation.
+A lightweight, traditional PHP login portal that uses server-rendered forms, PHP sessions, and a JSON-backed user store. The app features a split login/registration page and a protected dashboard rendered with classic PHP templates.
 
 ## Features
 
-- Email/password registration with bcrypt hashing
-- Login endpoint that seeds the session and redirects to a protected dashboard
-- Session persistence with `express-session` cookies
-- Basic account management view that displays stored profile info
-- JSON-based user store for simple demos (no external database required)
+- PHP session-based authentication without external frameworks
+- Login and registration handled by `index.php` with friendly error banners
+- User data persisted to `data/users.json` with `password_hash` / `password_verify`
+- Protected `dashboard.php` that greets the signed-in user and exposes account metadata
+- Simple `logout.php` endpoint to clear the session
+
+## Requirements
+
+- PHP 8.1 or newer with JSON extension enabled (default in most installs)
 
 ## Getting started
 
-1. **Install dependencies**
+1. **Install dependencies** – none beyond PHP itself.
+2. **Seed demo data (optional)** – `data/users.json` already includes `demo@example.com / password`. You can delete the file to start fresh.
+3. **Run the built-in PHP server**
    ```bash
-   npm install
+   php -S localhost:8000
    ```
-   > If you are on macOS/Homebrew and encounter missing ICU libraries, reinstall `icu4c` and relink Node:
-   > ```bash
-   > brew reinstall icu4c
-   > brew reinstall node
-   > ```
-2. **Run the server**
-   ```bash
-   npm run dev
-   ```
-3. Open `http://localhost:3000` in your browser.
-
-## Default account
-
-Use the bundled seed user to log in immediately:
-
-- Email: `demo@example.com`
-- Password: `password`
-
-You can also register a new account via the form on the landing page.
-
-## Environment variables
-
-- `PORT`: Port number for the HTTP server (defaults to `3000`).
-- `SESSION_SECRET`: Secret used to sign the session cookie. Always override this in production.
+4. Visit `http://localhost:8000` in your browser. Use the login form or create a new account.
 
 ## Project structure
 
 ```
 .
+├── assets
+│   └── styles.css          # Shared styling for login + dashboard
 ├── data
-│   └── users.json          # Simple JSON user store
-├── public
-│   ├── app.js              # Login + registration interactions
-│   ├── dashboard.html      # Protected page
-│   ├── dashboard.js        # Dashboard logic
-│   ├── index.html          # Landing page
-│   └── styles.css          # Shared styles
-├── src
-│   ├── server.js           # Express app + routes
-│   └── usersStore.js       # User CRUD helpers
-├── package.json
+│   └── users.json          # JSON data store (bcrypt hashes)
+├── includes
+│   └── users.php           # Helper functions for user CRUD + auth
+├── dashboard.php           # Protected area
+├── index.php               # Login + registration portal
+├── logout.php              # Session teardown
 └── README.md
 ```
 
-## API reference
+## Default account
 
-| Method | Path           | Description                       |
-| ------ | -------------- | --------------------------------- |
-| POST   | `/api/register`| Create a new user and start session |
-| POST   | `/api/login`   | Authenticate and start session    |
-| POST   | `/api/logout`  | Destroy active session            |
-| GET    | `/api/session` | Returns session state + user info |
+If you kept the bundled seed file you can log in with:
 
-All endpoints exchange JSON payloads and expect `Content-Type: application/json`.
+- Email: `demo@example.com`
+- Password: `password`
+
+Otherwise, submit the “Create account” form to register a new profile. Users are written to `data/users.json` using `password_hash()` with the BCRYPT algorithm.
 
 ## Notes
 
-- This demo stores users in `data/users.json`. For production, replace the store with a real database and stronger validation.
-- Cookies are marked `secure` only when `NODE_ENV=production`. Behind HTTPS you should enable that flag.
+- This project is intentionally simple for educational purposes. For production, move the data store to a proper database and enforce CSRF tokens.
+- The JSON file is not locked between requests beyond the `LOCK_EX` used during writes. Avoid concurrent writes or adopt a database when scaling up.
