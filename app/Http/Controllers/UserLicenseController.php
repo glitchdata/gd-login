@@ -49,12 +49,14 @@ class UserLicenseController extends Controller
                 ->withInput();
         }
 
+        $duration = max(1, (int) ($product->duration_months ?? 12));
+
         $license = License::create([
             'product_id' => $product->id,
             'user_id' => $request->user()->id,
             'seats_total' => $seats,
             'seats_used' => 0,
-            'expires_at' => now()->addYear(),
+            'expires_at' => now()->addMonths($duration),
         ]);
 
         return redirect()

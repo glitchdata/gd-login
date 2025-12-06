@@ -34,6 +34,10 @@
             <dd>${{ number_format($license->product->price ?? 0, 2) }}</dd>
         </div>
         <div>
+            <dt>Duration</dt>
+            <dd>{{ $license->product->duration_months ?? '—' }} months</dd>
+        </div>
+        <div>
             <dt>License ID</dt>
             <dd>#{{ $license->id }}</dd>
         </div>

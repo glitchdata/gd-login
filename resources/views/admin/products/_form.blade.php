@@ -17,6 +17,14 @@
             <span>Category</span>
             <input type="text" name="category" value="{{ old('category', $product->category ?? '') }}">
         </label>
+        <label>
+            <span>Price (USD per seat)</span>
+            <input type="number" name="price" min="0" step="0.01" value="{{ old('price', $product->price ?? '0.00') }}" required>
+        </label>
+        <label>
+            <span>License duration (months)</span>
+            <input type="number" name="duration_months" min="1" max="60" value="{{ old('duration_months', $product->duration_months ?? 12) }}" required>
+        </label>
     </div>
     <label>
         <span>Price (USD per seat)</span>

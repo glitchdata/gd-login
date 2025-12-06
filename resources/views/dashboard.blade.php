@@ -83,7 +83,10 @@
                 <select name="product_id" id="product-select" required style="width:100%;border:1px solid rgba(15,23,42,0.15);border-radius:0.9rem;padding:0.85rem 1rem;font-size:1rem;">
                     <option value="" disabled {{ old('product_id') ? '' : 'selected' }}>Choose a product</option>
                     @foreach ($products as $product)
-                        <option value="{{ $product->id }}" data-price="{{ number_format($product->price, 2, '.', '') }}" {{ (int) old('product_id') === $product->id ? 'selected' : '' }}>
+                        <option value="{{ $product->id }}"
+                                data-price="{{ number_format($product->price, 2, '.', '') }}"
+                                data-duration="{{ $product->duration_months }}"
+                                {{ (int) old('product_id') === $product->id ? 'selected' : '' }}>
                             {{ $product->name }} ({{ $product->product_code }}) · ${{ number_format($product->price, 2) }}/seat
                         </option>
                     @endforeach
@@ -94,7 +97,10 @@
                 <input type="number" name="seats_total" id="seats-input" min="1" value="{{ old('seats_total', 1) }}" required>
             </label>
             <div style="padding:0.75rem 1rem;background:var(--bg);border-radius:0.75rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
-                <span>Estimated total</span>
+                <span>
+                    Estimated total
+                    <small style="display:block;font-weight:400;color:var(--muted);">Renews every <span id="duration-text">0</span> months</small>
+                </span>
                 <span id="purchase-total">$0.00</span>
             </div>
             <label>
@@ -184,15 +190,18 @@
     const select = document.getElementById('product-select');
     const seats = document.getElementById('seats-input');
     const total = document.getElementById('purchase-total');
-    if (!select || !seats || !total) {
+    const durationText = document.getElementById('duration-text');
+    if (!select || !seats || !total || !durationText) {
         return;
     }
 
     const updateTotal = () => {
         const price = parseFloat(select.selectedOptions[0]?.dataset.price || '0');
+        const duration = parseInt(select.selectedOptions[0]?.dataset.duration || '0', 10);
         const seatCount = parseInt(seats.value, 10) || 0;
         const amount = price * seatCount;
         total.textContent = amount > 0 ? `$${amount.toFixed(2)}` : '$0.00';
+        durationText.textContent = duration > 0 ? duration : '—';
     };
 
     select.addEventListener('change', updateTotal);

@@ -26,6 +26,7 @@ class UpdateProductRequest extends FormRequest
             'category' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'duration_months' => ['required', 'integer', 'min:1', 'max:60'],
         ];
     }
 }

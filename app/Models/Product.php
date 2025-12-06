@@ -16,10 +16,12 @@ class Product extends Model
         'category',
         'description',
         'price',
+        'duration_months',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'duration_months' => 'integer',
     ];
 
     public function licenses()
