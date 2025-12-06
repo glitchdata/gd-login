@@ -7,10 +7,15 @@ use Illuminate\View\View;
 
 class ShopController extends Controller
 {
-    public function __invoke(): View
+    public function index(): View
     {
         return view('shop.index', [
             'products' => Product::orderBy('name')->get(),
         ]);
+    }
+
+    public function show(Product $product): View
+    {
+        return view('shop.show', compact('product'));
     }
 }

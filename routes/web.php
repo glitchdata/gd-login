@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home')->name('home');
 Route::view('/api-lab', 'api.lab')->name('api.lab');
 
-Route::get('/shop', ShopController::class)->name('shop');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/shop/{product:product_code}', [ShopController::class, 'show'])->name('shop.products.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');

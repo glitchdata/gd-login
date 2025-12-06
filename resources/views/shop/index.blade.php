@@ -24,7 +24,7 @@
             <article style="border:1px solid rgba(15,23,42,0.08);border-radius:1rem;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;background:var(--bg);">
                 <div>
                     <p class="eyebrow" style="margin-bottom:0.25rem;color:var(--muted);">{{ $product->category ?? 'Software' }}</p>
-                    <h3 style="margin:0;">{{ $product->name }}</h3>
+                    <h3 style="margin:0;"><a href="{{ route('shop.products.show', $product) }}" style="color:inherit;text-decoration:none;">{{ $product->name }}</a></h3>
                     <p style="margin:0;color:var(--muted);font-family:monospace;">{{ $product->product_code }}</p>
                 </div>
                 <p style="margin:0;">{{ $product->description ?: 'No marketing copy provided yet.' }}</p>
@@ -33,7 +33,7 @@
                     <span style="color:var(--muted);">{{ $product->duration_months }}-month term</span>
                 </div>
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:auto;">
-                    <a class="link" style="font-weight:600;" href="{{ route('login') }}">Purchase in dashboard →</a>
+                    <a class="link" style="font-weight:600;" href="{{ route('shop.products.show', $product) }}">View details →</a>
                     <a class="link" href="{{ route('register') }}">Need an account?</a>
                 </div>
             </article>
