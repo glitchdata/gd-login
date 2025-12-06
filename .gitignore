@@ -7,8 +7,15 @@
 /storage/pail
 /vendor
 .env
+.env.*
 .env.backup
 .env.production
+.env.local
+.env.staging
+# Sensitive runtime keys
+/storage/oauth-private.key
+/storage/oauth-public.key
+/storage/logs/*.log
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
