@@ -12,9 +12,7 @@ class LicenseValidationController extends Controller
     public function __invoke(ValidateLicenseRequest $request): JsonResponse
     {
         $license = License::with('product')
-            ->whereHas('product', function ($query) use ($request) {
-                $query->where('product_code', $request->input('product_code'));
-            })
+            ->where('identifier', $request->input('license_code'))
             ->first();
 
         if (! $license) {

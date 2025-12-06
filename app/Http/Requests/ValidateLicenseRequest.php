@@ -14,7 +14,7 @@ class ValidateLicenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_code' => ['required', 'string'],
+            'license_code' => ['required', 'string'],
             'seats_requested' => ['nullable', 'integer', 'min:1'],
         ];
     }

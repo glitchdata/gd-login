@@ -27,7 +27,7 @@
         <article>
             <p class="eyebrow" style="margin-bottom:0.35rem;">02 · API validation</p>
             <h2 style="margin-top:0;">Verify entitlements programmatically</h2>
-            <p>Use the hosted API Lab to post product codes and seat counts, mirroring how your backend can confirm availability in production.</p>
+            <p>Use the hosted API Lab to post license codes and seat counts, mirroring how your backend can confirm availability in production.</p>
             <a class="link" href="{{ route('api.lab') }}">Open the API Lab</a>
         </article>
         <article>
@@ -41,14 +41,14 @@
 
 <section class="card alt">
     <div style="display:flex;flex-direction:column;gap:1rem;">
-        <div>
-            <p class="eyebrow" style="color:rgba(255,255,255,0.7);">API quickstart</p>
-            <h2 style="margin:0;">`POST /api/licenses/validate`</h2>
-            <p style="margin:0;color:rgba(255,255,255,0.8);">Send a product code plus requested seats to confirm availability, expiration, and seat counts—all responses structured for easy automation.</p>
-        </div>
-        <pre style="margin:0;background:rgba(0,0,0,0.3);padding:1rem;border-radius:0.9rem;color:#fff;font-family:monospace;overflow:auto;">{
-  "product_code": "LIC-ANL-01",
-  "seats_requested": 3
+                <div>
+                        <p class="eyebrow" style="color:rgba(255,255,255,0.7);">API quickstart</p>
+                        <h2 style="margin:0;">`POST /api/licenses/validate`</h2>
+                        <p style="margin:0;color:rgba(255,255,255,0.8);">Send a license code plus requested seats to confirm availability, expiration, and seat counts—all responses structured for easy automation.</p>
+                </div>
+                <pre style="margin:0;background:rgba(0,0,0,0.3);padding:1rem;border-radius:0.9rem;color:#fff;font-family:monospace;overflow:auto;">{
+    "license_code": "ACTV-ABCD-1234",
+    "seats_requested": 3
 }</pre>
         <div>
             <a class="link" style="color:#fff;font-weight:700;" href="{{ route('api.lab') }}">Send a sample request →</a>

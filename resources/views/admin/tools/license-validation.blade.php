@@ -19,8 +19,8 @@
 <section class="card">
     <form id="license-test-form" style="display:grid;gap:1rem;">
         <label>
-            <span>Product code</span>
-            <input type="text" name="product_code" placeholder="LIC-ANL-01" required>
+            <span>License code</span>
+            <input type="text" name="license_code" placeholder="ABCD-EFGH-IJKL" required>
         </label>
         <label>
             <span>Seats requested (optional)</span>
@@ -60,7 +60,7 @@
         resultCard.style.display = 'none';
         const formData = new FormData(form);
         const payload = {
-            product_code: formData.get('product_code'),
+            license_code: formData.get('license_code'),
         };
         const seats = formData.get('seats_requested');
         if (seats) {

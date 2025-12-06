@@ -80,7 +80,7 @@ Request body:
 
 ```json
 {
-	"product_code": "LIC-ANL-01",
+	"license_code": "ABCD-EFGH-IJKL",
 	"seats_requested": 3
 }
 ```

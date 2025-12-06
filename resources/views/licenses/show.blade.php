@@ -95,10 +95,10 @@
         <span style="font-size:0.9rem;color:var(--muted);">POST /api/licenses/validate</span>
     </div>
 
-    <form id="license-test-form" data-product-code="{{ $license->product->product_code ?? '' }}" style="display:grid;gap:1rem;margin-top:1.25rem;">
+    <form id="license-test-form" data-license-code="{{ $license->identifier }}" style="display:grid;gap:1rem;margin-top:1.25rem;">
         <label>
-            <span>Product code</span>
-            <input type="text" id="product-code" value="{{ $license->product->product_code ?? 'Unavailable' }}" {{ $license->product ? 'readonly' : 'disabled' }}>
+            <span>License code</span>
+            <input type="text" id="license-code" value="{{ $license->identifier }}" readonly>
         </label>
         <label>
             <span>Seats requested (optional)</span>
@@ -135,12 +135,12 @@
     const statusPill = document.getElementById('status-pill');
     const resultJson = document.getElementById('result-json');
     const errorMessage = document.getElementById('error-message');
-    const productCodeInput = document.getElementById('product-code');
+    const licenseCodeInput = document.getElementById('license-code');
     const seatsRequestedInput = document.getElementById('seats-requested');
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        if (!productCodeInput.value || productCodeInput.disabled) {
+        if (!licenseCodeInput.value || licenseCodeInput.disabled) {
             return;
         }
 
@@ -148,7 +148,7 @@
         errorCard.style.display = 'none';
 
         const payload = {
-            product_code: productCodeInput.value,
+            license_code: licenseCodeInput.value,
         };
         const seatsValue = seatsRequestedInput.value;
         if (seatsValue) {
