@@ -9,6 +9,7 @@ A Laravel 11 application that delivers an email/password login portal with regis
 - Dashboard now highlights account details plus a license inventory table seeded with demo data.
 - Dashboard offers a self-serve purchase form with per-seat pricing, product-defined license durations, and a mock credit card checkout so users can add new licenses tied to their account in seconds.
 - Licenses now maintain allow-listed domains via `license_domains` records so you can restrict API validations or audits to specific tenants.
+- Every license automatically receives a globally unique identifier (e.g., `ABCD-EFGH-IJKL`) for auditing, search, and API integrations.
 - Admin console for CRUD management of the product catalog, license seat allocations, optional user ownership assignments, and user onboarding/offboarding (all protected by an `is_admin` flag).
 - Public-facing homepage (`/`) spotlights the platform, links to the external shop (`/shop`), and surfaces an API Lab (`/api-lab`) so prospects can validate licenses without signing in.
 - Lightweight API endpoint for validating licenses by product code (`POST /api/licenses/validate`).

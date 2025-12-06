@@ -163,6 +163,7 @@
                         <td style="padding:0.9rem 0.75rem;font-weight:600;color:var(--text);">
                             <a href="{{ route('licenses.show', $license) }}" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:0.2rem;">
                                 <span>{{ $license->product->name ?? '—' }}</span>
+                                <span style="font-size:0.8rem;color:var(--muted);">ID: {{ $license->identifier }}</span>
                                 <span style="font-size:0.8rem;color:var(--muted);">View details →</span>
                             </a>
                         </td>

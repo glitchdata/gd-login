@@ -31,6 +31,7 @@
                     <th style="padding:0 0.75rem;">Product</th>
                     <th style="padding:0 0.75rem;">Assigned</th>
                     <th style="padding:0 0.75rem;">Code</th>
+                    <th style="padding:0 0.75rem;">Identifier</th>
                     <th style="padding:0 0.75rem;">Domains</th>
                     <th style="padding:0 0.75rem;">Usage</th>
                     <th style="padding:0 0.75rem;">Expires</th>
@@ -43,6 +44,7 @@
                         <td style="padding:0.9rem 0.75rem;font-weight:600;">{{ $license->product->name ?? '—' }}</td>
                         <td style="padding:0.9rem 0.75rem;">{{ $license->user->name ?? 'Unassigned' }}</td>
                         <td style="padding:0.9rem 0.75rem;font-family:monospace;">{{ $license->product->product_code ?? '—' }}</td>
+                        <td style="padding:0.9rem 0.75rem;font-family:monospace;">{{ $license->identifier }}</td>
                         <td style="padding:0.9rem 0.75rem;">
                             @if ($license->domains->isEmpty())
                                 <span style="color:var(--muted);">—</span>
@@ -67,7 +69,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
+                        <td colspan="8" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
                             No licenses available yet.
                         </td>
                     </tr>

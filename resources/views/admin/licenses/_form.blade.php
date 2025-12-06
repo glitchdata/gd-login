@@ -17,6 +17,11 @@
             @endforeach
         </select>
     </label>
+    @if (!empty($license->identifier))
+        <div style="padding:0.85rem 1rem;border:1px dashed rgba(15,23,42,0.3);border-radius:0.9rem;font-family:monospace;background:rgba(15,23,42,0.03);">
+            Identifier: {{ $license->identifier }}
+        </div>
+    @endif
     <label>
         <span>Allowed domains</span>
         <textarea name="domains" rows="3" style="width:100%;border:1px solid rgba(15,23,42,0.15);border-radius:0.9rem;padding:0.85rem 1rem;font-size:1rem;" placeholder="acme.com&#10;subsidiary.org">{{ $domainInput }}</textarea>

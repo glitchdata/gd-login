@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class License extends Model
 {
@@ -17,6 +18,7 @@ class License extends Model
         'seats_total',
         'seats_used',
         'expires_at',
+        'identifier',
     ];
 
     protected $casts = [
@@ -25,6 +27,12 @@ class License extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (License $license) {
+            if (empty($license->identifier)) {
+                $license->identifier = self::generateIdentifier();
+            }
+        });
+
         static::deleting(function (License $license) {
             $license->domains()->delete();
         });
@@ -48,5 +56,14 @@ class License extends Model
     public function domains()
     {
         return $this->hasMany(LicenseDomain::class);
+    }
+
+    private static function generateIdentifier(): string
+    {
+        do {
+            $identifier = strtoupper(Str::random(4).'-'.Str::random(4).'-'.Str::random(4));
+        } while (self::where('identifier', $identifier)->exists());
+
+        return $identifier;
     }
 }
