@@ -9,17 +9,34 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('licenses', function (Blueprint $table) {
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->dropColumn(['name', 'product_code']);
+            if (! Schema::hasColumn('licenses', 'product_id')) {
+                $table->unsignedBigInteger('product_id');
+            }
+
+            if (Schema::hasColumn('licenses', 'name')) {
+                $table->dropColumn('name');
+            }
+
+            if (Schema::hasColumn('licenses', 'product_code')) {
+                $table->dropColumn('product_code');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('licenses', function (Blueprint $table) {
-            $table->string('name');
-            $table->string('product_code');
-            $table->dropConstrainedForeignId('product_id');
+            if (! Schema::hasColumn('licenses', 'name')) {
+                $table->string('name');
+            }
+
+            if (! Schema::hasColumn('licenses', 'product_code')) {
+                $table->string('product_code');
+            }
+
+            if (Schema::hasColumn('licenses', 'product_id')) {
+                $table->dropColumn('product_id');
+            }
         });
     }
 };
