@@ -8,6 +8,7 @@ A Laravel 11 application that delivers an email/password login portal with regis
 - Controllers dedicated to login, registration, and dashboard rendering with session regeneration to prevent fixation.
 - Dashboard now highlights account details plus a license inventory table seeded with demo data.
 - Admin console for CRUD management of licenses (protected by an `is_admin` flag on users) plus user management for inviting, editing, or deprovisioning accounts.
+- Lightweight API endpoint for validating licenses by product code (`POST /api/licenses/validate`).
 - Eloquent-powered `users` table migrations and a seeded demo account (`demo@example.com` / `password`).
 - Blade layout + views that provide the polished UI without requiring a frontend build step (Tailwind/Vite can be added later).
 
@@ -56,6 +57,40 @@ A Laravel 11 application that delivers an email/password login portal with regis
 	```bash
 	php artisan tinker --execute="App\\Models\\User::where('email','you@example.com')->update(['is_admin' => true]);"
 	```
+
+## License validation API
+
+`POST /api/licenses/validate`
+
+Request body:
+
+```json
+{
+	"product_code": "LIC-ANL-01",
+	"seats_requested": 3
+}
+```
+
+Example response:
+
+```json
+{
+	"valid": true,
+	"reason": null,
+	"seats_requested": 3,
+	"seats_available": 7,
+	"expires_at": "2026-04-01",
+	"license": {
+		"id": 1,
+		"name": "Analytics Pro",
+		"product_code": "LIC-ANL-01",
+		"seats_total": 25,
+		"seats_used": 18
+	}
+}
+```
+
+Failures return `valid: false` plus a `reason` string (e.g., `License not found.`, `License expired.`, or `Insufficient seats.`). Add API authentication (token header, gateway, etc.) before exposing the endpoint publicly.
 
 
 ## Key credentials
