@@ -21,10 +21,6 @@
             <span>License code</span>
             <input type="text" name="license_code" placeholder="ABCD-EFGH-IJKL" required>
         </label>
-        <label>
-            <span>Seats requested (optional)</span>
-            <input type="number" name="seats_requested" min="1" placeholder="1">
-        </label>
         <button type="submit">Validate license</button>
     </form>
 </section>
@@ -61,10 +57,6 @@
         const payload = {
             license_code: formData.get('license_code'),
         };
-        const seats = formData.get('seats_requested');
-        if (seats) {
-            payload.seats_requested = Number(seats);
-        }
 
         try {
             const response = await fetch('{{ url('/api/licenses/validate') }}', {
@@ -75,17 +67,31 @@
                 body: JSON.stringify(payload),
             });
 
-            if (!response.ok) {
-                throw new Error('Request failed with status ' + response.status);
+            let json;
+            try {
+                json = await response.json();
+            } catch (parseError) {
+                throw new Error('Received an unreadable response from the API.');
             }
 
-            const json = await response.json();
+            if (!response.ok) {
+                const message = json?.reason || json?.message || 'Request failed with status ' + response.status;
+                throw new Error(message);
+            }
+
             statusPill.textContent = json.valid ? 'VALID' : 'INVALID';
             statusPill.style.background = json.valid ? 'rgba(22, 163, 74, 0.15)' : 'rgba(220, 38, 38, 0.15)';
             statusPill.style.color = json.valid ? 'var(--success)' : 'var(--error)';
             resultJson.textContent = JSON.stringify(json, null, 2);
             resultCard.style.display = 'block';
+
+            if (!json.valid) {
+                const reason = json.reason ? 'License is not valid: ' + json.reason : 'License is not valid.';
+                errorMessage.textContent = reason;
+                errorCard.style.display = 'block';
+            }
         } catch (error) {
+            resultCard.style.display = 'none';
             errorMessage.textContent = error.message || 'Unable to reach the API.';
             errorCard.style.display = 'block';
         }
