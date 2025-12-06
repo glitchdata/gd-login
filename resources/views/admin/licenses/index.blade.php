@@ -30,10 +30,8 @@
                 <tr style="text-align:left;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;">
                     <th style="padding:0 0.75rem;">Product</th>
                     <th style="padding:0 0.75rem;">Assigned</th>
-                    <th style="padding:0 0.75rem;">Code</th>
                     <th style="padding:0 0.75rem;">Identifier</th>
                     <th style="padding:0 0.75rem;">Domains</th>
-                    <th style="padding:0 0.75rem;">Usage</th>
                     <th style="padding:0 0.75rem;">Expires</th>
                     <th style="padding:0 0.75rem;">Actions</th>
                 </tr>
@@ -43,7 +41,6 @@
                     <tr style="background:var(--bg);">
                         <td style="padding:0.9rem 0.75rem;font-weight:600;">{{ $license->product->name ?? '—' }}</td>
                         <td style="padding:0.9rem 0.75rem;">{{ $license->user->name ?? 'Unassigned' }}</td>
-                        <td style="padding:0.9rem 0.75rem;font-family:monospace;">{{ $license->product->product_code ?? '—' }}</td>
                         <td style="padding:0.9rem 0.75rem;font-family:monospace;">{{ $license->identifier }}</td>
                         <td style="padding:0.9rem 0.75rem;">
                             @if ($license->domains->isEmpty())
@@ -56,7 +53,6 @@
                                 </div>
                             @endif
                         </td>
-                        <td style="padding:0.9rem 0.75rem;">{{ $license->seats_used }} / {{ $license->seats_total }} ({{ $license->seats_available }} available)</td>
                         <td style="padding:0.9rem 0.75rem;">{{ $license->expires_at ? $license->expires_at->format('M j, Y') : 'No expiry' }}</td>
                         <td style="padding:0.9rem 0.75rem; display:flex; gap:0.5rem;">
                             <a class="link" href="{{ route('admin.licenses.edit', $license) }}">Edit</a>
@@ -69,7 +65,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
+                        <td colspan="6" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
                             No licenses available yet.
                         </td>
                     </tr>
