@@ -134,10 +134,9 @@
         <table style="width:100%;border-collapse:separate;border-spacing:0 0.5rem;">
             <thead>
                 <tr style="text-align:left;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;">
-                    <th style="padding:0 0.75rem;">Product</th>
-                    <th style="padding:0 0.75rem;">Code</th>
-                    <th style="padding:0 0.75rem;">Seats</th>
-                    <th style="padding:0 0.75rem;">Available</th>
+                    <th style="padding:0 0.75rem;">License</th>
+                    <th style="padding:0 0.75rem;">Domain</th>
+                    <th style="padding:0 0.75rem;">Identifier</th>
                     <th style="padding:0 0.75rem;">Expires</th>
                 </tr>
             </thead>
@@ -146,15 +145,21 @@
                     <tr style="background:var(--bg);">
                         <td style="padding:0.9rem 0.75rem;font-weight:600;color:var(--text);">
                             <a href="{{ route('licenses.show', $license) }}" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:0.2rem;">
-                                <span>{{ $license->product->name ?? '—' }}</span>
-                                <span style="font-size:0.8rem;color:var(--muted);">ID: {{ $license->identifier }}</span>
+                                <span>License #{{ $license->id }}</span>
                                 <span style="font-size:0.8rem;color:var(--muted);">View details →</span>
                             </a>
                         </td>
-                        <td style="padding:0.9rem 0.75rem;font-family:monospace;">{{ $license->product->product_code ?? '—' }}</td>
-                        <td style="padding:0.9rem 0.75rem;">{{ $license->seats_used }} / {{ $license->seats_total }}</td>
-                        <td style="padding:0.9rem 0.75rem;color:{{ $license->seats_available > 0 ? 'var(--success)' : 'var(--error)' }};">
-                            {{ $license->seats_available }}
+                        <td style="padding:0.9rem 0.75rem;">
+                            @php
+                                $domains = $license->domains->pluck('domain')->filter()->take(2);
+                            @endphp
+                            {{ $domains->isNotEmpty() ? $domains->join(', ') : '—' }}
+                            @if ($license->domains->count() > 2)
+                                <span style="display:block;font-size:0.75rem;color:var(--muted);">+{{ $license->domains->count() - 2 }} more</span>
+                            @endif
+                        </td>
+                        <td style="padding:0.9rem 0.75rem;font-family:monospace;">
+                            {{ $license->identifier ?? '—' }}
                         </td>
                         <td style="padding:0.9rem 0.75rem;">
                             {{ $license->expires_at ? $license->expires_at->format('M j, Y') : 'No expiry' }}
@@ -162,7 +167,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
+                        <td colspan="4" style="padding:1rem 0.75rem;text-align:center;color:var(--muted);">
                             No licenses have been assigned to you yet.
                         </td>
                     </tr>
