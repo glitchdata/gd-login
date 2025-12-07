@@ -32,6 +32,7 @@
             <a class="link" style="font-weight:600;" href="{{ route('admin.products.index') }}">Manage products →</a>
             <a class="link" style="font-weight:600;" href="{{ route('admin.licenses.index') }}">Manage licenses →</a>
             <a class="link" style="font-weight:600;" href="{{ route('admin.tools.license-validation') }}">Test API →</a>
+            <a class="link" style="font-weight:600;" href="{{ route('email.test') }}">Send test email →</a>
         </div>
     </section>
 @endif

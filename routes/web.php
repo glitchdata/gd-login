@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmailTestController;
 use App\Http\Controllers\PayPalOrderController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserLicenseController;
@@ -48,6 +49,11 @@ Route::post('/paypal/orders', [PayPalOrderController::class, 'store'])
 Route::get('/dashboard/licenses/{license}', [UserLicenseController::class, 'show'])
     ->middleware('auth')
     ->name('licenses.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/email-test', [EmailTestController::class, 'create'])->name('email.test');
+    Route::post('/email-test', [EmailTestController::class, 'store'])->name('email.test.send');
+});
 
 Route::prefix('admin')
     ->name('admin.')
