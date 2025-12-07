@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\License;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LicenseValidatorJsonController extends Controller
 {
-    public function __invoke(string $key): JsonResponse
+    public function __invoke(Request $request, string $key): JsonResponse
     {
-        $license = License::with('product')->where('identifier', $key)->first();
+        $seatsRequested = max(1, (int) $request->query('seats_requested', 1));
+        $domain = $request->query('domain');
+
+        $license = License::with(['product', 'domains'])->where('identifier', $key)->first();
 
         if (! $license) {
             return response()->json([
@@ -18,12 +22,30 @@ class LicenseValidatorJsonController extends Controller
             ], 404);
         }
 
-        $isExpired = $license->expires_at && $license->expires_at->isPast();
-        $valid = ! $isExpired;
+        $errors = [];
+
+        if ($license->expires_at && $license->expires_at->isPast()) {
+            $errors[] = 'License expired.';
+        }
+
+        if ($license->seats_total !== null && $seatsRequested > $license->seats_total) {
+            $errors[] = 'Insufficient seats.';
+        }
+
+        if ($domain) {
+            $domains = $license->domains->pluck('domain')->filter()->map('strtolower');
+            if ($domains->isNotEmpty() && ! $domains->contains(strtolower($domain))) {
+                $errors[] = 'Domain not allowed for this license.';
+            }
+        }
+
+        $valid = empty($errors);
 
         return response()->json([
             'valid' => $valid,
-            'reason' => $valid ? null : ($isExpired ? 'License expired.' : 'License invalid.'),
+            'reason' => $valid ? null : $errors[0],
+            'errors' => $errors,
+            'seats_requested' => $seatsRequested,
             'expires_at' => optional($license->expires_at)->toDateString(),
             'license' => [
                 'id' => $license->id,
@@ -37,6 +59,9 @@ class LicenseValidatorJsonController extends Controller
                 'product_code' => $license->product->product_code,
                 'vendor' => $license->product->vendor,
                 'category' => $license->product->category,
+            ],
+            'constraints' => [
+                'domain_required' => $license->domains->isNotEmpty(),
             ],
         ]);
     }
