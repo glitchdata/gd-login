@@ -38,6 +38,14 @@
             <dd style="font-family:monospace;">{{ $license->inspect_uri }}</dd>
         </div>
         <div>
+            <dt>Public validator</dt>
+            <dd style="font-family:monospace;">
+                <a href="{{ $license->public_validator_uri }}" target="_blank" rel="noopener" style="color:inherit;">
+                    {{ $license->public_validator_uri }}
+                </a>
+            </dd>
+        </div>
+        <div>
             <dt>Per-seat rate</dt>
             <dd>${{ number_format($license->product->price ?? 0, 2) }}</dd>
         </div>

@@ -150,6 +150,7 @@
                                 <span>License #{{ $license->id }}</span>
                                 <span style="font-size:0.8rem;color:var(--muted);">View details →</span>
                             </a>
+                            <a href="{{ $license->public_validator_uri }}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:0.35rem;font-size:0.8rem;color:var(--primary);font-weight:600;">External validator ↗</a>
                         </td>
                         <td style="padding:0.9rem 0.75rem;">
                             @php

@@ -27,6 +27,7 @@ class License extends Model
 
     protected $appends = [
         'inspect_uri',
+        'public_validator_uri',
     ];
 
     protected static function booted(): void
@@ -65,6 +66,11 @@ class License extends Model
     public function getInspectUriAttribute(): string
     {
         return route('licenses.show', $this);
+    }
+
+    public function getPublicValidatorUriAttribute(): string
+    {
+        return route('licenses.validator', ['license' => $this->identifier]);
     }
 
     private static function generateIdentifier(): string

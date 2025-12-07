@@ -9,12 +9,15 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailTestController;
 use App\Http\Controllers\PayPalOrderController;
+use App\Http\Controllers\PublicLicenseValidatorController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserLicenseController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 Route::view('/api-lab', 'api.lab')->name('api.lab');
+Route::get('/licenses/validator/{license:identifier}', PublicLicenseValidatorController::class)
+    ->name('licenses.validator');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 Route::get('/shop/{product:product_code}', [ShopController::class, 'show'])->name('shop.products.show');
