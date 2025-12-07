@@ -146,11 +146,19 @@
                 @forelse ($licenses as $license)
                     <tr style="background:var(--bg);">
                         <td style="padding:0.9rem 0.75rem;font-weight:600;color:var(--text);">
-                            <a href="{{ $license->inspect_uri }}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:0.2rem;">
+                            <a href="{{ $license->inspect_uri }}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 010 5.656m-1.414-1.414a2 2 0 010 2.828m-2.828-2.828a6 6 0 018.485 8.485m-1.414-1.414a4 4 0 01-5.656 0m1.414-1.414a2 2 0 01-2.828 0" />
+                                </svg>
                                 <span>License #{{ $license->id }}</span>
                                 <span style="font-size:0.8rem;color:var(--muted);">View details →</span>
                             </a>
-                            <a href="{{ $license->public_validator_uri }}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:0.35rem;font-size:0.8rem;color:var(--primary);font-weight:600;">External validator ↗</a>
+                            <a href="{{ $license->public_validator_uri }}" target="_blank" rel="noopener" style="display:inline-flex;margin-top:0.35rem;font-size:0.8rem;color:var(--primary);font-weight:600;align-items:center;gap:0.3rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3v4a1 1 0 001 1h4m-5 8v4a1 1 0 001 1h4m-5-8V3a1 1 0 00-1-1H5a1 1 0 00-1 1v16a1 1 0 001 1h8a1 1 0 001-1v-4m-5-8h4" />
+                                </svg>
+                                External validator ↗
+                            </a>
                         </td>
                         <td style="padding:0.9rem 0.75rem;">
                             @php
