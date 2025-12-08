@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\LicenseValidationTestController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\EventLogController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
@@ -31,6 +32,8 @@ Route::get('/shop/{product:product_code}', [ShopController::class, 'show'])->nam
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
+    Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('login.google.redirect');
+    Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('login.google.callback');
     Route::get('/login/two-factor', [LoginController::class, 'showTwoFactorForm'])->name('login.two-factor.show');
     Route::post('/login/two-factor', [LoginController::class, 'verifyTwoFactor'])->name('login.two-factor.verify');
     Route::post('/login/two-factor/resend', [LoginController::class, 'resendTwoFactor'])->name('login.two-factor.resend');
