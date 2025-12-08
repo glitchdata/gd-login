@@ -67,7 +67,16 @@
             </div>
             <input type="hidden" name="paypal_order_id" id="shop-paypal-order">
             <p style="margin:0;color:var(--muted);font-size:0.95rem;">Checkout is powered by PayPal. Each purchase provides one license seat—approve the popup to finish.</p>
-            <div id="paypal-buttons-shop"></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem;align-items:start;">
+                <div>
+                    <div id="paypal-buttons-shop"></div>
+                    <p style="margin:0.35rem 0 0;color:var(--muted);font-size:0.9rem;">Pay with PayPal</p>
+                </div>
+                <div>
+                    <div id="paypal-card-shop"></div>
+                    <p style="margin:0.35rem 0 0;color:var(--muted);font-size:0.9rem;">Pay with credit/debit card</p>
+                </div>
+            </div>
             <p id="paypal-errors-shop" style="display:none;color:var(--error);font-weight:600;"></p>
             @error('payment')
                 <p style="color:var(--error);font-weight:600;">{{ $message }}</p>
@@ -142,8 +151,18 @@
                 }
             };
 
-            if (window.paypal && document.getElementById('paypal-buttons-shop')) {
-                paypal.Buttons({
+            const renderButtons = () => {
+                const paypalContainer = document.getElementById('paypal-buttons-shop');
+                const cardContainer = document.getElementById('paypal-card-shop');
+
+                if (!window.paypal) {
+                    if (paypalContainer || cardContainer) {
+                        showError('PayPal SDK is not available.');
+                    }
+                    return;
+                }
+
+                const options = {
                     style: {
                         layout: 'vertical',
                         color: 'gold',
@@ -186,7 +205,7 @@
                         }
                     },
                     onCancel: () => {
-                        showError('PayPal checkout was cancelled.');
+                        showError('Checkout was cancelled.');
                         if (paypalOrderInput) {
                             paypalOrderInput.value = '';
                         }
@@ -195,7 +214,7 @@
                         }
                     },
                     onError: (err) => {
-                        showError(err && err.message ? err.message : 'PayPal reported an error.');
+                        showError(err && err.message ? err.message : 'Payment reported an error.');
                         if (paypalOrderInput) {
                             paypalOrderInput.value = '';
                         }
@@ -203,10 +222,29 @@
                             form.dataset.paypalReady = 'false';
                         }
                     }
-                }).render('#paypal-buttons-shop');
-            } else if (!window.paypal && document.getElementById('paypal-buttons-shop')) {
-                showError('PayPal SDK is not available.');
-            }
+                };
+
+                if (paypalContainer) {
+                    window.paypal.Buttons(options).render('#paypal-buttons-shop');
+                }
+
+                if (cardContainer && window.paypal.FUNDING && window.paypal.FUNDING.CARD) {
+                    window.paypal.Buttons({
+                        ...options,
+                        style: {
+                            layout: 'vertical',
+                            color: 'silver',
+                            shape: 'rect',
+                        },
+                        fundingSource: window.paypal.FUNDING.CARD,
+                    }).render('#paypal-card-shop');
+                }
+            };
+
+            renderButtons();
+        } else if (!window.paypal && document.getElementById('paypal-buttons-shop')) {
+            showError('PayPal SDK is not available.');
+        }
         })();
         </script>
     @endpush

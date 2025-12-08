@@ -112,7 +112,16 @@
             </div>
             <input type="hidden" name="paypal_order_id" id="paypal-order-id">
             <p style="margin:0;color:var(--muted);font-size:0.95rem;">Checkout is powered by PayPal. Each purchase provides a single-seat license tied to your account.</p>
-            <div id="paypal-buttons-dashboard"></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem;align-items:start;">
+                <div>
+                    <div id="paypal-buttons-dashboard"></div>
+                    <p style="margin:0.35rem 0 0;color:var(--muted);font-size:0.9rem;">Pay with PayPal</p>
+                </div>
+                <div>
+                    <div id="paypal-card-dashboard"></div>
+                    <p style="margin:0.35rem 0 0;color:var(--muted);font-size:0.9rem;">Pay with credit/debit card</p>
+                </div>
+            </div>
             <p id="paypal-errors-dashboard" style="display:none;color:var(--error);font-weight:600;"></p>
             @error('payment')
                 <p style="color:var(--error);font-weight:600;">{{ $message }}</p>
@@ -255,17 +264,17 @@
     }
 
     const renderButtons = () => {
-        const container = document.getElementById('paypal-buttons-dashboard');
-        if (!container || !paypalEnabled) {
+        const paypalContainer = document.getElementById('paypal-buttons-dashboard');
+        const cardContainer = document.getElementById('paypal-card-dashboard');
+
+        if (!paypalEnabled || !window.paypal) {
+            if (paypalEnabled) {
+                showError('Unable to load the PayPal SDK. Verify PAYPAL_CLIENT_ID.');
+            }
             return;
         }
 
-        if (!window.paypal) {
-            showError('Unable to load the PayPal SDK. Verify PAYPAL_CLIENT_ID.');
-            return;
-        }
-
-        paypal.Buttons({
+        const options = {
             style: {
                 layout: 'horizontal',
                 label: 'pay',
@@ -325,14 +334,31 @@
                 form.submit();
             },
             onCancel: () => {
-                showError('PayPal checkout was cancelled.');
+                showError('Checkout was cancelled.');
                 clearOrder();
             },
             onError: (err) => {
-                showError(err?.message || 'PayPal reported an unexpected error.');
+                showError(err?.message || 'Payment reported an unexpected error.');
                 clearOrder();
             },
-        }).render('#paypal-buttons-dashboard');
+        };
+
+        if (paypalContainer) {
+            window.paypal.Buttons(options).render('#paypal-buttons-dashboard');
+        }
+
+        if (cardContainer && window.paypal.FUNDING && window.paypal.FUNDING.CARD) {
+            window.paypal.Buttons({
+                ...options,
+                style: {
+                    layout: 'horizontal',
+                    label: 'pay',
+                    color: 'silver',
+                    shape: 'rect',
+                },
+                fundingSource: window.paypal.FUNDING.CARD,
+            }).render('#paypal-card-dashboard');
+        }
     };
 
     renderButtons();
