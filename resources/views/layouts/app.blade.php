@@ -65,9 +65,10 @@
             gap: 0.75rem;
             padding: 0.75rem 1rem;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.72);
             backdrop-filter: blur(12px);
             box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.05);
         }
         .site-nav a {
             text-decoration: none;
@@ -77,6 +78,15 @@
         .site-nav a.brand {
             font-size: 1.1rem;
             color: var(--primary);
+        }
+        .site-nav .login-chip {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(37, 99, 235, 0.25);
         }
         .site-nav .nav-links {
             display: flex;
@@ -88,7 +98,7 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0.55rem 0.9rem;
+                padding: 0.55rem 0.98rem;
                 border: 1px solid rgba(15, 23, 42, 0.12);
                 border-radius: 0.9rem;
                 background: #fff;
@@ -98,6 +108,15 @@
             .site-nav .nav-links a:hover {
                 transform: translateY(-1px);
                 box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+            }
+            .site-nav .nav-links a.cta {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: #fff;
+                border: none;
+                box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+            }
+            .site-nav .nav-links a.cta:hover {
+                box-shadow: 0 16px 34px rgba(37, 99, 235, 0.45);
             }
         .nav-toggle {
             display: none;
@@ -205,6 +224,7 @@
     <div class="page">
         <nav class="site-nav">
             <a href="{{ route('home') }}" class="brand">Glitchdata</a>
+            <span class="login-chip">Federated login portal</span>
             <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
                 <span>Menu</span>
                 <span aria-hidden="true">☰</span>
@@ -220,9 +240,9 @@
                         <a href="{{ route('admin.event-logs.index') }}">Event Logs</a>
                     @endif
                 @else
+                    <a href="{{ route('login') }}" class="cta">Login</a>
                     <a href="{{ route('shop') }}">Shop</a>
                     <a href="{{ route('api.lab') }}">API Lab</a>
-                    <a href="{{ route('login') }}">Login</a>
                     <a href="{{ route('register') }}">Register</a>
                 @endauth
             </div>

@@ -1,23 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'Glitchdata · Identity & Licensing')
+@section('title', 'Glitchdata · Federated Login')
 
 @section('content')
 <header class="hero">
     <div>
-        <p class="eyebrow">Glitchdata Platform</p>
-        <h1>Identity, licensing, and validation in one simple portal.</h1>
-        <p class="lead">Launch a secure dashboard for your team, grant software seats, and verify entitlements through a clean API toolkit.</p>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
-            <button type="button" class="link button-reset" style="font-weight:600;" onclick="window.location='{{ route('shop') }}'">Explore the shop →</button>
-            <button type="button" class="link button-reset" onclick="window.location='{{ route('api.lab') }}'">Test the API →</button>
-            <button type="button" class="link button-reset" onclick="window.location='{{ route('register') }}'">Create an account</button>
+        <p class="eyebrow">Federated access</p>
+        <h1>One login for every Glitchdata service.</h1>
+        <p class="lead">Authenticate once, land in your dashboard, and manage licenses, seats, and API tooling without hopping between apps.</p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
+            <button type="button" onclick="window.location='{{ route('login') }}'">Log in to the portal</button>
+            <button type="button" class="link button-reset" onclick="window.location='{{ route('register') }}'">Create access</button>
+            <button type="button" class="link button-reset" onclick="window.location='{{ route('shop') }}'">Browse licenses</button>
         </div>
+        <p style="margin-top:0.75rem;color:var(--muted);">Already have a license code? Jump straight into the federated login to activate it.</p>
     </div>
 </header>
 
 <section class="card">
     <div class="grid">
+        <article>
+            <p class="eyebrow" style="margin-bottom:0.35rem;">00 · Login first</p>
+            <h2 style="margin-top:0;">Make sign-in the front door</h2>
+            <p>Everything routes through the login portal—SSO-ready, two-factor friendly, and the fastest path to your dashboard.</p>
+            <a class="link" href="{{ route('login') }}">Log in now</a>
+        </article>
         <article>
             <p class="eyebrow" style="margin-bottom:0.35rem;">01 · Self-serve licenses</p>
             <h2 style="margin-top:0;">Purchase seats from the catalog</h2>
@@ -36,6 +43,31 @@
             <p>Admins gain a polished console to edit products, onboard users, and audit allocations—no extra front-end build pipeline required.</p>
             <a class="link" href="{{ route('login') }}">Sign in as admin</a>
         </article>
+    </div>
+</section>
+
+<section class="card" style="display:grid;gap:1rem;">
+    <div style="display:flex;flex-direction:column;gap:0.35rem;">
+        <p class="eyebrow" style="margin-bottom:0;color:var(--muted);">How login federation works</p>
+        <h2 style="margin:0;">Unified authentication, instant handoff</h2>
+        <p style="margin:0;">Users authenticate once, then pivot to licensing, payments, and validation APIs with their session carried across.</p>
+    </div>
+    <div class="details" style="gap:0.75rem 1rem;">
+        <div>
+            <p class="eyebrow" style="margin:0;color:var(--muted);">Step 1</p>
+            <p style="margin:0;font-weight:600;">Sign in via the portal</p>
+            <p style="margin:0;color:var(--muted);">Email + password with optional two-factor for higher assurance.</p>
+        </div>
+        <div>
+            <p class="eyebrow" style="margin:0;color:var(--muted);">Step 2</p>
+            <p style="margin:0;font-weight:600;">Select the workspace</p>
+            <p style="margin:0;color:var(--muted);">Choose the product context and seamlessly reach dashboard or API tools.</p>
+        </div>
+        <div>
+            <p class="eyebrow" style="margin:0;color:var(--muted);">Step 3</p>
+            <p style="margin:0;font-weight:600;">Manage and validate</p>
+            <p style="margin:0;color:var(--muted);">Grant seats, activate licenses, and call the validation endpoint under one session.</p>
+        </div>
     </div>
 </section>
 
