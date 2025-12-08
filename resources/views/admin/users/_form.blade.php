@@ -30,5 +30,5 @@
 
 <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
     <button type="submit">{{ $submitLabel }}</button>
-    <a class="link" href="{{ route('admin.users.index') }}">Cancel</a>
+    <a class="link" href="{{ route('admin.users.index') }}" style="display:inline-flex;align-items:center;justify-content:center;padding:0.65rem 1rem;border:1px solid rgba(15,23,42,0.12);border-radius:0.9rem;background:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);">Cancel</a>
 </div>
