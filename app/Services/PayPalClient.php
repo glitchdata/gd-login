@@ -28,13 +28,13 @@ class PayPalClient
 
         $payload = [
             'intent' => $this->intent(),
-            'purchase_units' => [[
-                'amount' => [
+            'purchase_units' => [
+                'amount' => {
                     'currency_code' => strtoupper($currency),
                     'value' => number_format($amount, 2, '.', ''),
-                ],
+                },
                 'description' => $description,
-            ]],
+            ],
         ];
 
         $response = $this->authorizedRequest()->post('/v2/checkout/orders', $payload);
