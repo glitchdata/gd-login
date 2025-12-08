@@ -13,6 +13,7 @@ use App\Http\Controllers\PayPalOrderController;
 use App\Http\Controllers\PublicLicenseValidatorController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserLicenseController;
+use App\Http\Controllers\Admin\LogController as AdminLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
@@ -69,4 +70,5 @@ Route::prefix('admin')
         Route::resource('products', AdminProductController::class)->except(['show']);
         Route::resource('users', AdminUserController::class)->except(['show']);
         Route::get('tools/license-validation', LicenseValidationTestController::class)->name('tools.license-validation');
+        Route::get('logs', [AdminLogController::class, 'index'])->name('logs.index');
     });
