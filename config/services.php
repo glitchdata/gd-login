@@ -50,4 +50,10 @@ return [
         'private_key' => env('APPLE_PRIVATE_KEY'),
     ],
 
+    'facebook' => [
+        'client_id' => env('META_CLIENT_ID'),
+        'client_secret' => env('META_CLIENT_SECRET'),
+        'redirect' => env('META_REDIRECT_URI'),
+    ],
+
 ];

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EventLogController;
 use App\Http\Controllers\Auth\AppleController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\MetaController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailTestController;
@@ -37,6 +38,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('login.google.callback');
     Route::get('/auth/apple/redirect', [AppleController::class, 'redirect'])->name('login.apple.redirect');
     Route::get('/auth/apple/callback', [AppleController::class, 'callback'])->name('login.apple.callback');
+    Route::get('/auth/meta/redirect', [MetaController::class, 'redirect'])->name('login.meta.redirect');
+    Route::get('/auth/meta/callback', [MetaController::class, 'callback'])->name('login.meta.callback');
     Route::get('/login/two-factor', [LoginController::class, 'showTwoFactorForm'])->name('login.two-factor.show');
     Route::post('/login/two-factor', [LoginController::class, 'verifyTwoFactor'])->name('login.two-factor.verify');
     Route::post('/login/two-factor/resend', [LoginController::class, 'resendTwoFactor'])->name('login.two-factor.resend');
