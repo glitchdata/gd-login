@@ -14,6 +14,7 @@ use App\Http\Controllers\PayPalOrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicLicenseValidatorController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\UserLicenseController;
 use App\Http\Controllers\Admin\LogController as AdminLogController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,14 @@ Route::post('/dashboard/licenses', [UserLicenseController::class, 'store'])
 Route::post('/paypal/orders', [PayPalOrderController::class, 'store'])
     ->middleware('auth')
     ->name('paypal.orders.store');
+
+Route::post('/stripe/intents', [StripePaymentController::class, 'intent'])
+    ->middleware('auth')
+    ->name('stripe.intents.create');
+
+Route::post('/stripe/complete', [StripePaymentController::class, 'complete'])
+    ->middleware('auth')
+    ->name('stripe.complete');
 
 Route::get('/dashboard/licenses/{license}', [UserLicenseController::class, 'show'])
     ->middleware('auth')

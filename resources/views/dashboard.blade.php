@@ -124,6 +124,52 @@
                 <p style="color:var(--error);font-weight:600;">Set PAYPAL_CLIENT_ID and PAYPAL_SECRET in your environment file to enable checkout.</p>
             @endif
         </form>
+
+        <div style="margin-top:1.5rem;padding:1rem;border:1px solid rgba(15,23,42,0.08);border-radius:0.9rem;background:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <p class="eyebrow" style="margin-bottom:0.35rem;">Card checkout</p>
+                    <h3 style="margin:0;">Pay with Stripe</h3>
+                </div>
+                <span style="font-size:0.9rem;color:var(--muted);">Secured by Stripe Elements</span>
+            </div>
+
+            <form method="POST" action="{{ route('stripe.complete') }}" id="stripe-purchase-form" style="display:grid;gap:0.85rem;margin-top:1rem;">
+                @csrf
+                <input type="hidden" name="product_id" id="stripe-product-id" value="">
+                <input type="hidden" name="payment_intent_id" id="stripe-payment-intent-id">
+                <label>
+                    <span>Product</span>
+                    <select id="stripe-product-select" required style="width:100%;border:1px solid rgba(15,23,42,0.15);border-radius:0.9rem;padding:0.85rem 1rem;font-size:1rem;">
+                        <option value="" disabled selected>Choose a product</option>
+                        @foreach ($products as $product)
+                            <option value="{{ $product->id }}"
+                                    data-price="{{ number_format($product->price, 2, '.', '') }}"
+                                    data-duration="{{ $product->duration_months }}">
+                                {{ $product->name }} ({{ $product->product_code }}) · ${{ number_format($product->price, 2) }}/seat
+                            </option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>
+                    <span>Primary domain (optional)</span>
+                    <input type="text" name="domain" id="stripe-domain" placeholder="acme.com" value="{{ old('domain') }}">
+                </label>
+                <div style="padding:0.75rem 1rem;background:var(--bg);border-radius:0.75rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
+                    <span>
+                        Estimated total
+                        <small style="display:block;font-weight:400;color:var(--muted);">Renews every <span id="stripe-duration-text">0</span> months</small>
+                    </span>
+                    <span id="stripe-total">$0.00</span>
+                </div>
+                <div id="stripe-card-element" style="padding:0.75rem 1rem;border:1px solid rgba(15,23,42,0.12);border-radius:0.75rem;background:#fff;"></div>
+                <button type="submit" id="stripe-submit" style="padding:0.75rem 1rem;border:none;border-radius:0.75rem;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;">Pay with card</button>
+                <p id="stripe-errors" style="display:none;color:var(--error);font-weight:600;"></p>
+                @if (! config('stripe.public_key'))
+                    <p style="color:var(--error);font-weight:600;">Set STRIPE_PUBLIC_KEY and STRIPE_SECRET in your environment file to enable Stripe checkout.</p>
+                @endif
+            </form>
+        </div>
     @endif
 </section>
 
@@ -196,6 +242,9 @@
 @push('scripts')
 @if ($paypalClientId)
     <script src="https://www.paypal.com/sdk/js?client-id={{ $paypalClientId }}&currency={{ $paypalCurrency ?? 'USD' }}" data-sdk-integration-source="button-factory"></script>
+@endif
+@if (config('stripe.public_key'))
+    <script src="https://js.stripe.com/v3/"></script>
 @endif
 <script>
 (function () {
@@ -344,4 +393,126 @@
     renderButtons();
 })();
 </script>
+
+@if (config('stripe.public_key'))
+<script>
+(function () {
+    const stripeKey = '{{ config('stripe.public_key') }}';
+    const stripe = Stripe(stripeKey);
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    const form = document.getElementById('stripe-purchase-form');
+    const select = document.getElementById('stripe-product-select');
+    const total = document.getElementById('stripe-total');
+    const durationText = document.getElementById('stripe-duration-text');
+    const productIdInput = document.getElementById('stripe-product-id');
+    const domainInput = document.getElementById('stripe-domain');
+    const intentInput = document.getElementById('stripe-payment-intent-id');
+    const errorEl = document.getElementById('stripe-errors');
+    const submitBtn = document.getElementById('stripe-submit');
+
+    card.mount('#stripe-card-element');
+
+    const showError = (message) => {
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+    };
+
+    const clearError = () => {
+        if (errorEl) {
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+        }
+    };
+
+    const updateTotal = () => {
+        if (!select || !total || !durationText) {
+            return;
+        }
+        const price = parseFloat(select.selectedOptions[0]?.dataset.price || '0');
+        const duration = parseInt(select.selectedOptions[0]?.dataset.duration || '0', 10);
+        total.textContent = price > 0 ? `$${price.toFixed(2)}` : '$0.00';
+        durationText.textContent = duration > 0 ? duration : '—';
+        if (productIdInput) {
+            productIdInput.value = select.value || '';
+        }
+    };
+
+    if (select) {
+        select.addEventListener('change', updateTotal);
+    }
+    updateTotal();
+
+    const setLoading = (loading) => {
+        if (!submitBtn) return;
+        submitBtn.disabled = loading;
+        submitBtn.textContent = loading ? 'Processing…' : 'Pay with card';
+    };
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError();
+
+            if (!select || !select.value) {
+                showError('Select a product before checking out.');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const payload = {
+                    product_id: select.value,
+                    domain: domainInput ? domainInput.value : null,
+                };
+
+                const response = await fetch('{{ route('stripe.intents.create') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Unable to create a Stripe payment.');
+                }
+
+                const clientSecret = data.client_secret;
+                const intentId = data.payment_intent_id;
+
+                const result = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card,
+                    },
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message || 'Card payment failed.');
+                }
+
+                if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+                    if (intentInput) {
+                        intentInput.value = intentId;
+                    }
+                    form.submit();
+                } else {
+                    throw new Error('Stripe did not complete the payment.');
+                }
+            } catch (err) {
+                showError(err && err.message ? err.message : 'Card payment failed.');
+            } finally {
+                setLoading(false);
+            }
+        });
+    }
+})();
+</script>
+@endif
 @endpush

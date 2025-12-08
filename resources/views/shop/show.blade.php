@@ -80,6 +80,39 @@
             @endif
         </form>
     </section>
+
+    <section class="card" style="margin-top:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+            <div>
+                <p class="eyebrow" style="margin-bottom:0.35rem;">Card checkout</p>
+                <h2 style="margin:0;">Pay with Stripe</h2>
+            </div>
+            <span style="font-size:0.9rem;color:var(--muted);">Secured by Stripe Elements</span>
+        </div>
+
+        <form method="POST" action="{{ route('stripe.complete') }}" style="display:grid;gap:1rem;margin-top:1.25rem;" id="shop-stripe-form">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="payment_intent_id" id="shop-stripe-payment-intent">
+            <label>
+                <span>Primary domain (optional)</span>
+                <input type="text" name="domain" id="shop-stripe-domain" placeholder="acme.com" value="{{ old('domain') }}">
+            </label>
+            <div style="padding:0.75rem 1rem;background:var(--bg);border-radius:0.75rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
+                <span>
+                    Estimated total
+                    <small style="display:block;font-weight:400;color:var(--muted);">Renews every {{ $product->duration_months }} months</small>
+                </span>
+                <span id="shop-stripe-total">${{ number_format($product->price, 2) }}</span>
+            </div>
+            <div id="shop-stripe-card" style="padding:0.75rem 1rem;border:1px solid rgba(15,23,42,0.12);border-radius:0.75rem;background:#fff;"></div>
+            <button type="submit" id="shop-stripe-submit" style="padding:0.75rem 1rem;border:none;border-radius:0.75rem;background:var(--primary);color:#fff;font-weight:700;cursor:pointer;">Pay with card</button>
+            <p id="shop-stripe-errors" style="display:none;color:var(--error);font-weight:600;"></p>
+            @if (! $stripePublicKey)
+                <p style="color:var(--error);font-weight:600;">Set STRIPE_PUBLIC_KEY and STRIPE_SECRET to enable Stripe checkout.</p>
+            @endif
+        </form>
+    </section>
 @endauth
 
 @endsection
@@ -87,6 +120,9 @@
 @push('scripts')
 @if ($paypalClientId)
     <script src="https://www.paypal.com/sdk/js?client-id={{ $paypalClientId }}&currency={{ $paypalCurrency ?? 'USD' }}" data-sdk-integration-source="button-factory"></script>
+@endif
+@if ($stripePublicKey)
+    <script src="https://js.stripe.com/v3/"></script>
 @endif
 <script>
 (function () {
@@ -212,4 +248,93 @@
     }
 })();
 </script>
+@if ($stripePublicKey)
+<script>
+(function () {
+    const stripe = Stripe('{{ $stripePublicKey }}');
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    const form = document.getElementById('shop-stripe-form');
+    const domainInput = document.getElementById('shop-stripe-domain');
+    const intentInput = document.getElementById('shop-stripe-payment-intent');
+    const errorEl = document.getElementById('shop-stripe-errors');
+    const submitBtn = document.getElementById('shop-stripe-submit');
+
+    card.mount('#shop-stripe-card');
+
+    const showError = (message) => {
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+    };
+
+    const clearError = () => {
+        if (errorEl) {
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+        }
+    };
+
+    const setLoading = (loading) => {
+        if (!submitBtn) return;
+        submitBtn.disabled = loading;
+        submitBtn.textContent = loading ? 'Processing…' : 'Pay with card';
+    };
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearError();
+            setLoading(true);
+
+            try {
+                const payload = {
+                    product_id: {{ $product->id }},
+                    domain: domainInput ? domainInput.value : null,
+                };
+
+                const response = await fetch('{{ route('stripe.intents.create') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || 'Unable to create a Stripe payment.');
+                }
+
+                const result = await stripe.confirmCardPayment(data.client_secret, {
+                    payment_method: {
+                        card,
+                    },
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message || 'Card payment failed.');
+                }
+
+                if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+                    if (intentInput) {
+                        intentInput.value = data.payment_intent_id;
+                    }
+                    form.submit();
+                } else {
+                    throw new Error('Stripe did not complete the payment.');
+                }
+            } catch (err) {
+                showError(err && err.message ? err.message : 'Card payment failed.');
+            } finally {
+                setLoading(false);
+            }
+        });
+    }
+})();
+</script>
+@endif
 @endpush

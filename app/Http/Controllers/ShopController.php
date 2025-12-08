@@ -20,6 +20,8 @@ class ShopController extends Controller
             'product' => $product,
             'paypalClientId' => config('paypal.client_id'),
             'paypalCurrency' => config('paypal.currency', 'USD'),
+            'stripePublicKey' => config('stripe.public_key'),
+            'stripeCurrency' => config('stripe.currency', 'USD'),
         ]);
     }
 }
