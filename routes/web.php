@@ -33,10 +33,15 @@ Route::get('/shop/{product:product_code}', [ShopController::class, 'show'])->nam
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
-    Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('login.google.redirect');
-    Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('login.google.callback');
-    Route::get('/auth/meta/redirect', [MetaController::class, 'redirect'])->name('login.meta.redirect');
-    Route::get('/auth/meta/callback', [MetaController::class, 'callback'])->name('login.meta.callback');
+    if (config('services.google.enabled')) {
+        Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('login.google.redirect');
+        Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('login.google.callback');
+    }
+
+    if (config('services.facebook.enabled')) {
+        Route::get('/auth/meta/redirect', [MetaController::class, 'redirect'])->name('login.meta.redirect');
+        Route::get('/auth/meta/callback', [MetaController::class, 'callback'])->name('login.meta.callback');
+    }
     Route::get('/login/two-factor', [LoginController::class, 'showTwoFactorForm'])->name('login.two-factor.show');
     Route::post('/login/two-factor', [LoginController::class, 'verifyTwoFactor'])->name('login.two-factor.verify');
     Route::post('/login/two-factor/resend', [LoginController::class, 'resendTwoFactor'])->name('login.two-factor.resend');

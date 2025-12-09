@@ -36,12 +36,14 @@ return [
     ],
 
     'google' => [
+        'enabled' => filter_var(env('GOOGLE_LOGIN_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
     'facebook' => [
+        'enabled' => filter_var(env('META_LOGIN_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'client_id' => env('META_CLIENT_ID'),
         'client_secret' => env('META_CLIENT_SECRET'),
         'redirect' => env('META_REDIRECT_URI'),

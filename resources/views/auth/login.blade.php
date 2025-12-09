@@ -15,14 +15,18 @@
     <section class="card">
         <h2>Sign in</h2>
         <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
-            <a href="{{ route('login.google.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;color:var(--text);text-decoration:none;">
-                <span aria-hidden="true" style="font-size:1.1rem;">🔐</span>
-                <span>Continue with Google</span>
-            </a>
-            <a href="{{ route('login.meta.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#0866ff;color:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;text-decoration:none;">
-                <span aria-hidden="true" style="font-size:1.1rem;">Ⓜ️</span>
-                <span>Continue with Meta</span>
-            </a>
+            @if (config('services.google.enabled'))
+                <a href="{{ route('login.google.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;color:var(--text);text-decoration:none;">
+                    <span aria-hidden="true" style="font-size:1.1rem;">🔐</span>
+                    <span>Continue with Google</span>
+                </a>
+            @endif
+            @if (config('services.facebook.enabled'))
+                <a href="{{ route('login.meta.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#0866ff;color:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;text-decoration:none;">
+                    <span aria-hidden="true" style="font-size:1.1rem;">Ⓜ️</span>
+                    <span>Continue with Meta</span>
+                </a>
+            @endif
             <p class="lead" style="margin:0;color:var(--muted);font-size:0.95rem;">Federated sign-in keeps your dashboard, shop, and API lab connected under one session.</p>
         </div>
         @if (session('status'))
