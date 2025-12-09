@@ -19,10 +19,6 @@
                 <span aria-hidden="true" style="font-size:1.1rem;">🔐</span>
                 <span>Continue with Google</span>
             </a>
-            <a href="{{ route('login.apple.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#000;color:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;text-decoration:none;">
-                <span aria-hidden="true" style="font-size:1.1rem;"></span>
-                <span>Sign in with Apple</span>
-            </a>
             <a href="{{ route('login.meta.redirect') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem 1rem;border-radius:0.9rem;border:1px solid rgba(15,23,42,0.15);background:#0866ff;color:#fff;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-weight:600;text-decoration:none;">
                 <span aria-hidden="true" style="font-size:1.1rem;">Ⓜ️</span>
                 <span>Continue with Meta</span>

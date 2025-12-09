@@ -10,10 +10,12 @@ class SocialiteServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Socialite::extend('apple', function ($app) {
-            $config = $app['config']['services.apple'] ?? [];
+        $apple = config('services.apple');
 
-            return Socialite::buildProvider(AppleProvider::class, $config);
-        });
+        if ($apple['enabled'] ?? false) {
+            Socialite::extend('apple', function ($app) use ($apple) {
+                return Socialite::buildProvider(AppleProvider::class, $apple);
+            });
+        }
     }
 }
